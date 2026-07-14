@@ -114,7 +114,7 @@ mysql -u root -p new_api < one-api.sql
 
 导入完成后，将 New API 的数据库连接改为 MySQL。
 
-示例 DSN：
+示例 SQL_DSN：
 
 ```text
 root:password@tcp(127.0.0.1:3306)/new_api?charset=utf8mb4&parseTime=True&loc=Local
@@ -188,7 +188,6 @@ python sqlite_to_mysql_newapi.py --help
 - 导出的 SQL 会使用 `utf8mb4` 字符集。
 - 导出的 SQL 会先 `DROP TABLE IF EXISTS`，再重新创建表。
 - 导入前请确认目标 MySQL 数据库中没有需要保留的同名表。
-- 公开到 GitHub 前，请确认 `.db` 和 `.sql` 文件中不包含敏感数据。
 
 ## 完整示例
 
