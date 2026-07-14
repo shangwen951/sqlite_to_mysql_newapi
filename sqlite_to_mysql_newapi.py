@@ -15,6 +15,23 @@ TEXT_LIKE = {"TEXT", "CLOB"}
 BLOB_LIKE = {"BLOB"}
 
 
+class ChineseArgumentParser(argparse.ArgumentParser):
+    def format_help(self) -> str:
+        return f"""用法: {self.prog} [-h] [--batch-size BATCH_SIZE] [sqlite_db] [output_sql]
+
+{self.description}
+
+位置参数:
+  sqlite_db             SQLite 数据库文件
+  output_sql            导出的 MySQL SQL 文件
+
+可选参数:
+  -h, --help            显示此帮助信息并退出
+  --batch-size BATCH_SIZE
+                        每条 INSERT 语句包含的行数
+"""
+
+
 def mysql_ident(name: str) -> str:
     return "`" + name.replace("`", "``") + "`"
 
@@ -222,21 +239,21 @@ def export_dump(sqlite_db: Path, output_sql: Path, batch_size: int) -> None:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Export New API SQLite tables and rows to a MySQL-importable SQL file."
+    parser = ChineseArgumentParser(
+        description="将 New API 的 SQLite 数据库导出为可导入 MySQL 的 SQL 文件。"
     )
-    parser.add_argument("sqlite_db", nargs="?", default="one-api.db", help="SQLite database file")
+    parser.add_argument("sqlite_db", nargs="?", default="one-api.db", help="SQLite 数据库文件")
     parser.add_argument(
         "output_sql",
         nargs="?",
         default="one-api.sql",
-        help="Output MySQL SQL file",
+        help="导出的 MySQL SQL 文件",
     )
     parser.add_argument(
         "--batch-size",
         type=int,
         default=500,
-        help="Rows per INSERT statement",
+        help="每条 INSERT 语句包含的行数",
     )
     return parser.parse_args()
 
@@ -252,7 +269,7 @@ def main() -> None:
         raise SystemExit("--batch-size 必须大于 0")
 
     export_dump(sqlite_db, output_sql, args.batch_size)
-    print(f"已导出 {sqlite_db} to {output_sql}")
+    print(f"已导出 {sqlite_db} 到 {output_sql}")
 
 
 if __name__ == "__main__":
